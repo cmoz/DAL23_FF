@@ -1,0 +1,64 @@
+#include <Adafruit_CircuitPlayground.h>
+#include <Servo.h>
+
+Servo servo1;
+Servo servo2;
+uint8_t pixeln = 0;
+int capsense[6];  // Updated for 6 valid input pins
+int pos = 0;
+int pos2 = 0;
+
+void setup() {
+  CircuitPlayground.begin();
+  servo1.attach(A1);  // Using A1 for servo (PWM supported)
+  servo2.attach(A2);  // Using A2 for second servo
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Update capacitive touch pins to valid ones for Circuit Playground Express
+  capsense[0] = CircuitPlayground.readCap(A1);
+  capsense[1] = CircuitPlayground.readCap(A2);
+  capsense[2] = CircuitPlayground.readCap(A3);
+  capsense[3] = CircuitPlayground.readCap(A4);
+  capsense[4] = CircuitPlayground.readCap(A5);
+  capsense[5] = CircuitPlayground.readCap(A6);
+
+  // Print values for debugging
+  for (int i = 0; i < 6; i++) {
+    Serial.print(i);
+    Serial.print("   ");
+    Serial.println(capsense[i]);
+  }
+
+  int frequency = 0;
+  pos = random(10, 180);
+  pos2 = random(10, 180);
+
+  delay(10);
+
+  servo1.write(0);
+  delay(10);
+  servo2.write(0);
+  delay(10);
+}
+
+void neoColorServoPos() {
+  CircuitPlayground.clearPixels();
+  int pinNum1 = random(0, 10);
+  int pinNum2 = random(0, 10);
+  int pinNum3 = random(0, 10);
+  CircuitPlayground.setPixelColor(pinNum1, 0, 255, 255);  // green blue
+  CircuitPlayground.setPixelColor(pinNum2, 255, 255, 0);  //
+  CircuitPlayground.setPixelColor(pinNum3, 255, 0, 255);  // red blue
+
+  // Servo position
+  servo1.write(pos);
+  delay(10);
+  servo2.write(pos2);
+  delay(10);
+  Serial.println("randPosition: ");
+  Serial.println(pos);
+  Serial.println("randPosition2: ");
+  Serial.println(pos2);
+}
